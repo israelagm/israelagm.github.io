@@ -103,16 +103,20 @@ nav li {margin-top: 15px;}
  |  \/  ||_ _|\ \/ /|_ _|| \| |/ __|
  | |\/| | | |  >  <  | | | .` |\__ \
  |_|  |_||___|/_/\_\|___||_|\_||___/*/
-/* Mixins allow you to define styles/rulesets that can be re-used */
+/* Mixins allow you to define styles/rulesets that can be re-used and referenced */
 
-// ex 1:
+// ex 1 (Can contain selectors, possibly mixed with properties. The selectors can even contain parent references):
 // scss:
 @mixin clearfix {
 	display: inline-block;
+	color: white;
 	&::after {
 		content: "";
 		display: block;
 		clear: both;
+	}
+	div & {
+		color: black;
 	}
 }
 section {
@@ -121,14 +125,18 @@ section {
 // css:
 section {
 	display: inline-block;
+	color: white;
 }
 section::after {
 	content: "";
 	display: block;
 	clear: both;
 }
+div section {
+	color: black;
+}
 
-// ex 2:
+// ex 2 (Can be included outside of any rule (that is, at the root of the document) as long as they don't directly define any properties or use any parent references):
 // scss:
 @mixin cssRuleset {
 	a {
@@ -141,3 +149,24 @@ a {
 	color: blue;
 	background-color: red;
 }
+
+// ex 3 (Can pass a block of styles to the mixin for placement within the styles included by the mixin. The styles will appear at the location of any @content directives found within the mixin):
+// scss:
+@mixin clearfix {
+	display: inline-block;
+	&::after {
+		color: white;
+	@content;
+	}
+}
+section {
+	@include clearfix; {
+		background-color: black;
+	}
+}
+// css:
+section {
+	display: inline-block; }
+	section::after {
+		color: white;
+		background-color: black; }
