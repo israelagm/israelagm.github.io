@@ -250,6 +250,59 @@ scss [folder]
  |  \/  || __||   \|_ _|  /_\    / _ \ | | | || __|| _ \|_ _|| __|/ __|
  | |\/| || _| | |) || |  / _ \  | (_) || |_| || _| |   / | | | _| \__ \
  |_|  |_||___||___/|___|/_/ \_\  \__\_\ \___/ |___||_|_\|___||___||___/*/
-/*  */
+/* Nest media queries directly inside the initial rules you're modifying */
+
+// ex 1 (Add media-specific styles without having to repeat selectors or break the flow of the stylesheet.):
+// scss:
+.img-responsive {
+	width: 100%;
+	@media (min-width: 768px) {
+		width: 500px;
+	}
+}
+// css:
+.img-responsive {
+	width: 100%; }
+	@media (min-width: 768px) {
+		.img-responsive {
+			width: 500px; }
+}
+
+// ex 2 (Can also be nested within one another. Queries will then be combined using the and operator):
+// scss:
+@media (min-width: 768px) {
+	.img-responsive {
+		@media (max-width: 992px) {
+		width: 500px;}
+	}
+}
+// css:
+@media (min-width: 768px) and (max-width: 992px) {
+	.img-responsive {
+		width: 500px; }
+}
+
+// ex 3 (Expressions including variables, functions, and operators can be used in place of the feature names and feature values):
+// scss:
+$breakpoint-s: 768px;
+$breakpoint-m: 992px;
+@media (min-width: $breakpoint-s) {
+	.img-responsive {
+		@media (max-width: $breakpoint-m) {
+		width: 500px;}
+	}
+}
+// css:
+@media (min-width: 768px) and (max-width: 992px) {
+	.img-responsive {
+		width: 500px; }
+}
 
 
+
+/*
+    _    ___   ___  _   _  __  __  ___  _  _  _____  ___ 
+   /_\  | _ \ / __|| | | ||  \/  || __|| \| ||_   _|/ __|
+  / _ \ |   /| (_ || |_| || |\/| || _| | .` |  | |  \__ \
+ /_/ \_\|_|_\ \___| \___/ |_|  |_||___||_|\_|  |_|  |___/*/
+/* Mixins allow you to define styles/rulesets that can be re-used and referenced */
