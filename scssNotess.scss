@@ -513,3 +513,83 @@ $breakpoints: (
 		font-size: 24px;
 	}
 }
+
+
+
+/*
+  _     ___    ___   ___  ___ 
+ | |   / _ \  / _ \ | _ \/ __|
+ | |__| (_) || (_) ||  _/\__ \
+ |____|\___/  \___/ |_|  |___/*/
+/* Simplify repetitive tasks by cycling through lists of items or values and performing an action on each. */
+
+// @for ex:
+// scss:
+@for $i from 1 through 3 {
+	.item-#{$i} {width: 2em * $i;}
+}
+// css:
+.item-1 {
+	width: 2em;
+}
+.item-2 {
+	width: 4em;
+}
+.item-3 {
+	width: 6em;
+}
+
+// @each ex 1 (@each loops iterate through collections of data, like a lists or map, and performs an action on each item.):
+// scss:
+$vehicles: (
+	'honda',
+	'toyota',
+	'ford',
+);
+@each $make in $vehicles {
+	.make-#{$make} {
+		background-image: url('img/#{$make}.jpg')
+	}
+}
+// css:
+.make-honda {
+	background-image: url("img/honda.jpg");
+}
+.make-toyota {
+	background-image: url("img/toyota.jpg");
+}
+.make-ford {
+	background-image: url("img/ford.jpg");
+}
+
+// @each ex 2:
+// scss:
+$socialMedia: (
+	'fb': #3b5998,
+	'tw': #1da1f2,
+	'yt': #ff0000,
+	'sc': #fffc00,
+);
+@mixin socialMedia($map) {
+	@each $social, $brand-color in $map {
+		&-#{$social} {
+			color: $brand-color;
+		}
+	}
+}
+.icn {
+	@include socialMedia($socialMedia);
+}
+// css:
+.icn-fb {
+	color: #3b5998;
+}
+.icn-tw {
+	color: #1da1f2;
+}
+.icn-yt {
+	color: #ff0000;
+}
+.icn-sc {
+	color: #fffc00;
+}
