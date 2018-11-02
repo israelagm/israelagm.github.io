@@ -305,4 +305,211 @@ $breakpoint-m: 992px;
    /_\  | _ \ / __|| | | ||  \/  || __|| \| ||_   _|/ __|
   / _ \ |   /| (_ || |_| || |\/| || _| | .` |  | |  \__ \
  /_/ \_\|_|_\ \___| \___/ |_|  |_||___||_|\_|  |_|  |___/*/
-/* Mixins allow you to define styles/rulesets that can be re-used and referenced */
+/* Arguments are written as variable names separated by commas, all in parentheses after the name. Then when including the mixin, values can be passed in in the same manner.*/
+
+// ex 1:
+// scss:
+@mixin roundPic($size, $brdr) {
+	width: $size;
+	height: $size;
+	border: $brdr;
+	border-radius: 50%;
+}
+.img-thumbnail {
+	@include roundPic(150px, 2px solid white);
+}
+// css:
+.img-thumbnail {
+	width: 150px;
+	height: 150px;
+	border: 2px solid white;
+	border-radius: 50%;
+}
+
+// ex 2 (Sass supports a null data type that lets you define optional mixin parameters without creating unnecessary CSS output.):
+// scss:
+@mixin roundPic($size, $brdr: null) {
+	width: $size;
+	height: $size;
+	border: $brdr;
+	border-radius: 50%;
+}
+.img-thumbnail {
+	@include roundPic(150px);
+}
+// css:
+.img-thumbnail {
+	width: 150px;
+	height: 150px;
+	border-radius: 50%;
+}
+
+// ex 3 (Remembering the correct order of arguments can be tricky. Sass solves this by allowing you to name the arguments you pass to a mixin, using keyword arguments):
+// scss:
+@mixin roundPic($size, $brdr: null) {
+	width: $size;
+	height: $size;
+	border: $brdr;
+	border-radius: 50%;
+}
+.img-thumbnail {
+	@include roundPic($brdr: 2px solid white, $size: 150px);
+}
+// css:
+.img-thumbnail {
+	width: 150px;
+	height: 150px;
+	border: 2px solid white;
+	border-radius: 50%;
+}
+
+
+
+/*
+  ___  ___   _  _  ___  ___  _____  ___  ___   _  _    _    _     ___ 
+ / __|/ _ \ | \| ||   \|_ _||_   _||_ _|/ _ \ | \| |  /_\  | |   / __|
+| (__| (_) || .` || |) || |   | |   | || (_) || .` | / _ \ | |__ \__ \
+ \___|\___/ |_|\_||___/|___|  |_|  |___|\___/ |_|\_|/_/ \_\|____||___/*/
+/* Conditionals output blocks of styles only under certain conditions */
+
+@if (expression) {
+	// do something here
+}
+
+// ex 1:
+// scss:
+body {
+	@if (1 > 100){
+		background-color: green;
+	}
+	@if (1 + 1 ==2) {
+		background-color: red;
+	}
+}
+// css:
+body {
+	background-color: red;
+}
+
+// ex 2:
+// scss:
+$break-xs: 575px;
+$break-s: 576px;
+$break-m: 768px;
+$break-l: 992px;
+@mixin mq($break) {
+	@if $break == 'xs' {
+		@media (max-width: $break-xs) {
+			@content;
+		}
+	}
+	@else if $break == 'sm' {
+		@media (min-width: $break-s) {
+			@content;
+		}
+	}
+	@else if $break == 'md' {
+		@media (min-width: $break-m) {
+			@content;
+		}
+	}
+	@else if $break == 'lg' {
+		@media (min-width: $break-l) {
+			@content;
+		}
+	}
+}
+.img-featured {
+	@include mq('s') {
+		display: none;
+	}
+}
+.main-content {
+	@include mq('md') {
+		width: 100%;
+	}
+}
+.intro-text {
+	@include mq('lg') {
+		font-size: 24px;
+	}
+}
+//css:
+@media (max-width: 575px) {
+	.img-featured {
+		display: none;
+	}
+}
+@media (min-width: 768px) {
+	.main-content {
+		width: 100%;
+	}
+}
+@media (min-width: 992px) {
+	.intro-text {
+		font-size: 24px;
+	}
+}
+
+
+
+/*
+  ___    _    ___  ___     __  __    _    ___  ___ 
+ / __|  /_\  / __|/ __|   |  \/  |  /_\  | _ \/ __|
+ \__ \ / _ \ \__ \\__ \   | |\/| | / _ \ |  _/\__ \
+ |___//_/ \_\|___/|___/   |_|  |_|/_/ \_\|_|  |___/*/
+/* Sass maps provide a flexible way to keep track of data by associating a name with a particular value. */
+
+// scss:
+$breakpoints: (
+	'xs': 575px,
+	's': 576px,
+	'm': 768px,
+	'l': 992px
+);
+@mixin mq($break) {
+	$value: map-get($breakpoints, $break);
+	$sm: map-get($breakpoints, 's');
+
+	@if $value < $sm {
+		@media (max-width: $value) {
+			@content;
+		}
+	}
+	@else {
+		@media (min-width: $value) {
+			@content;
+		}
+	}
+}
+.img-featured {
+	@include mq('s') {
+		display: none;
+	}
+}
+.main-content {
+	@include mq('m') {
+		width: 100%;
+	}
+}
+.intro-text {
+	@include mq('l') {
+		font-size: 24px;
+	}
+}
+// css:
+@media (min-width: 576px) {
+	.img-featured {
+		display: none;
+	}
+}
+@media (min-width: 768px) {
+	.main-content {
+		width: 100%;
+	}
+}
+@media (min-width: 992px) {
+	.intro-text {
+		font-size: 24px;
+	}
+}
