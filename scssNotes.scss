@@ -1,0 +1,613 @@
+/* =======================================================================
+  ____     ____   ____    ____      _   _    ___    _____   _____   ____  
+ / ___|   / ___| / ___|  / ___|    | \ | |  / _ \  |_   _| | ____| / ___| 
+ \___ \  | |     \___ \  \___ \    |  \| | | | | |   | |   |  _|   \___ \ 
+  ___) | | |___   ___) |  ___) |   | |\  | | |_| |   | |   | |___   ___) |
+ |____/   \____| |____/  |____/    |_| \_|  \___/    |_|   |_____| |____/ 
+                                                                          
+======================================================================== */
+
+
+
+/* 
+  ___  _____  ___  _   _   ___  _____  _   _  ___  ___ 
+ / __||_   _|| _ \| | | | / __||_   _|| | | || _ \| __|
+ \__ \  | |  |   /| |_| || (__   | |  | |_| ||   /| _| 
+ |___/  |_|  |_|_\ \___/  \___|  |_|   \___/ |_|_\|___|*/
+/* Define Variables before Mixins, CSS needs to reference what has been defined already */
+
+$varialbes: first;
+@mixins second;
+.css {last: thing;}
+
+
+
+/* 
+ __   __ _    ___  ___    _    ___  _     ___  ___ 
+ \ \ / //_\  | _ \|_ _|  /_\  | _ )| |   | __|/ __|
+  \ V // _ \ |   / | |  / _ \ | _ \| |__ | _| \__ \
+   \_//_/ \_\|_|_\|___|/_/ \_\|___/|____||___||___/*/
+/* Variable store values that you reference in declarations */
+
+// scss:
+$color-primary: #ffffff;
+.className {color: $color-primary;}
+// css:
+.className {color: #ffffff;}
+
+
+
+/* 
+  _  _  ___  ___  _____  ___  ___    ___  ___  _     ___  ___  _____  ___   ___  ___ 
+ | \| || __|/ __||_   _|| __||   \  / __|| __|| |   | __|/ __||_   _|/ _ \ | _ \/ __|
+ | .` || _| \__ \  | |  | _| | |) | \__ \| _| | |__ | _|| (__   | | | (_) ||   /\__ \
+ |_|\_||___||___/  |_|  |___||___/  |___/|___||____||___|\___|  |_|  \___/ |_|_\|___/*/
+/* Nested selectors make writing descendant and complex selectors fast */
+
+// ex 1:
+// scss:
+nav {
+	margin-top: 10px;
+	li {margin-top: 15px;}
+}
+// css:
+nav {margin-top: 10px;}
+nav li {margin-top: 15px;}
+
+// ex 2:
+// scss:
+.button {
+	text: {
+		align: center;
+		decoration: none;}
+}
+// css:
+.button {
+	text-align: center;
+	text-decoration: none;
+}
+
+
+
+/* 
+  ___   _    ___  ___  _  _  _____   ___  ___  _     ___  ___  _____  ___   ___ 
+ | _ \ /_\  | _ \| __|| \| ||_   _| / __|| __|| |   | __|/ __||_   _|/ _ \ | _ \
+ |  _// _ \ |   /| _| | .` |  | |   \__ \| _| | |__ | _|| (__   | | | (_) ||   /
+ |_| /_/ \_\|_|_\|___||_|\_|  |_|   |___/|___||____||___|\___|  |_|  \___/ |_|_\*/
+/* Reference the parent selector of a nested rule using the ampersand (&) */
+
+// scss:
+#main {
+	color: black;
+	a {
+		color: blue;
+		&:hover { color: red; }
+	}
+	&-sidebar { color: gray; }
+}
+// css:
+#main {
+	color: black;}
+#main a {
+	color: blue;}
+#main a:hover {
+	color: red;}
+#main-sidebar {
+	color: gray;
+}
+
+
+
+/*
+  __  __  ___ __  __ ___  _  _  ___ 
+ |  \/  ||_ _|\ \/ /|_ _|| \| |/ __|
+ | |\/| | | |  >  <  | | | .` |\__ \
+ |_|  |_||___|/_/\_\|___||_|\_||___/*/
+/* Mixins allow you to define styles/rulesets that can be re-used and referenced */
+
+// ex 1 (Can contain selectors, possibly mixed with properties. The selectors can even contain parent references):
+// scss:
+@mixin clearfix {
+	display: inline-block;
+	color: white;
+	&::after {
+		content: "";
+		display: block;
+		clear: both;
+	}
+	div & {
+		color: black;
+	}
+}
+section {
+	@include clearfix;
+}
+// css:
+section {
+	display: inline-block;
+	color: white;
+}
+section::after {
+	content: "";
+	display: block;
+	clear: both;
+}
+div section {
+	color: black;
+}
+
+// ex 2 (Can be included outside of any rule (that is, at the root of the document) as long as they don't directly define any properties or use any parent references):
+// scss:
+@mixin cssRuleset {
+	a {
+		color: blue;
+		background-color: red;}
+}
+@include cssRuleset;
+// css:
+a {
+	color: blue;
+	background-color: red;
+}
+
+// ex 3 (Can pass a block of styles to the mixin for placement within the styles included by the mixin. The styles will appear at the location of any @content directives found within the mixin):
+// scss:
+@mixin clearfix {
+	display: inline-block;
+	&::after {
+		color: white;
+	@content;
+	}
+}
+section {
+	@include clearfix; {
+		background-color: black;
+	}
+}
+// css:
+section {
+	display: inline-block; }
+	section::after {
+		color: white;
+		background-color: black;
+}
+
+
+
+/*
+  ___ __  __ _____  ___  _  _  ___  
+ | __|\ \/ /|_   _|| __|| \| ||   \ 
+ | _|  >  <   | |  | _| | .` || |) |
+ |___|/_/\_\  |_|  |___||_|\_||___/ */
+/* Useful directive for sharing sets of related properties that get repeated in your stylesheets. */
+
+// ex 1 ():
+// scss:
+.btn {
+	border: 1px #f00;
+	background-color: #fdd;
+}
+.btn-callout {
+	@extend .btn;
+	border-width: 3px;
+}
+// css:
+.btn, .btn-callout {
+	border: 1px #f00;
+	background-color: #fdd;
+}
+.btn-callout {
+	border-width: 3px;
+}
+
+// ex 2 (A placeholder selector, won't appear in the CSS output unless extended):
+// scss:
+%btn {
+	border: 1px #000;
+	background-color: #fdd;
+}
+.btn-callout {
+	@extend %btn;
+	border: 3px #f50;
+}
+.btn-warning {
+	@extend %btn;
+	border: 5px #f00;
+}
+// css:
+.btn-callout, .btn-warning  {
+	border: 1px #000;
+	background-color: #fdd;
+}
+.btn-callout {
+	border: 3px #f50;
+}
+.btn-warning {
+	border: 5px #f00;
+}
+
+
+
+/*
+  ___   _    ___  _____  ___    _    _     ___ 
+ | _ \ /_\  | _ \|_   _||_ _|  /_\  | |   / __|
+ |  _// _ \ |   /  | |   | |  / _ \ | |__ \__ \
+ |_| /_/ \_\|_|_\  |_|  |___|/_/ \_\|____||___/*/
+/* Partials let you split your stylesheet into separate files. They help modularize your CSS and keep things easier to maintain */
+
+//If you have a SCSS file that you want to import but don't want to compile to a CSS file, you can add an underscore to the beginning of the filename.
+scss [folder]
+	_variables.scss
+	_mixins.scss
+
+// This will tell Sass not to compile it to a normal CSS file. You can then import these files without using the underscore.
+@import 'variables', 'mixins';
+
+
+
+/*
+  __  __  ___  ___  ___    _      ___   _   _  ___  ___  ___  ___  ___ 
+ |  \/  || __||   \|_ _|  /_\    / _ \ | | | || __|| _ \|_ _|| __|/ __|
+ | |\/| || _| | |) || |  / _ \  | (_) || |_| || _| |   / | | | _| \__ \
+ |_|  |_||___||___/|___|/_/ \_\  \__\_\ \___/ |___||_|_\|___||___||___/*/
+/* Nest media queries directly inside the initial rules you're modifying */
+
+// ex 1 (Add media-specific styles without having to repeat selectors or break the flow of the stylesheet.):
+// scss:
+.img-responsive {
+	width: 100%;
+	@media (min-width: 768px) {
+		width: 500px;
+	}
+}
+// css:
+.img-responsive {
+	width: 100%; }
+	@media (min-width: 768px) {
+		.img-responsive {
+			width: 500px; }
+}
+
+// ex 2 (Can also be nested within one another. Queries will then be combined using the and operator):
+// scss:
+@media (min-width: 768px) {
+	.img-responsive {
+		@media (max-width: 992px) {
+		width: 500px;}
+	}
+}
+// css:
+@media (min-width: 768px) and (max-width: 992px) {
+	.img-responsive {
+		width: 500px; }
+}
+
+// ex 3 (Expressions including variables, functions, and operators can be used in place of the feature names and feature values):
+// scss:
+$breakpoint-s: 768px;
+$breakpoint-m: 992px;
+@media (min-width: $breakpoint-s) {
+	.img-responsive {
+		@media (max-width: $breakpoint-m) {
+		width: 500px;}
+	}
+}
+// css:
+@media (min-width: 768px) and (max-width: 992px) {
+	.img-responsive {
+		width: 500px; }
+}
+
+
+
+/*
+    _    ___   ___  _   _  __  __  ___  _  _  _____  ___ 
+   /_\  | _ \ / __|| | | ||  \/  || __|| \| ||_   _|/ __|
+  / _ \ |   /| (_ || |_| || |\/| || _| | .` |  | |  \__ \
+ /_/ \_\|_|_\ \___| \___/ |_|  |_||___||_|\_|  |_|  |___/*/
+/* Arguments are written as variable names separated by commas, all in parentheses after the name. Then when including the mixin, values can be passed in in the same manner.*/
+
+// ex 1:
+// scss:
+@mixin roundPic($size, $brdr) {
+	width: $size;
+	height: $size;
+	border: $brdr;
+	border-radius: 50%;
+}
+.img-thumbnail {
+	@include roundPic(150px, 2px solid white);
+}
+// css:
+.img-thumbnail {
+	width: 150px;
+	height: 150px;
+	border: 2px solid white;
+	border-radius: 50%;
+}
+
+// ex 2 (Sass supports a null data type that lets you define optional mixin parameters without creating unnecessary CSS output.):
+// scss:
+@mixin roundPic($size, $brdr: null) {
+	width: $size;
+	height: $size;
+	border: $brdr;
+	border-radius: 50%;
+}
+.img-thumbnail {
+	@include roundPic(150px);
+}
+// css:
+.img-thumbnail {
+	width: 150px;
+	height: 150px;
+	border-radius: 50%;
+}
+
+// ex 3 (Remembering the correct order of arguments can be tricky. Sass solves this by allowing you to name the arguments you pass to a mixin, using keyword arguments):
+// scss:
+@mixin roundPic($size, $brdr: null) {
+	width: $size;
+	height: $size;
+	border: $brdr;
+	border-radius: 50%;
+}
+.img-thumbnail {
+	@include roundPic($brdr: 2px solid white, $size: 150px);
+}
+// css:
+.img-thumbnail {
+	width: 150px;
+	height: 150px;
+	border: 2px solid white;
+	border-radius: 50%;
+}
+
+
+
+/*
+  ___  ___   _  _  ___  ___  _____  ___  ___   _  _    _    _     ___ 
+ / __|/ _ \ | \| ||   \|_ _||_   _||_ _|/ _ \ | \| |  /_\  | |   / __|
+| (__| (_) || .` || |) || |   | |   | || (_) || .` | / _ \ | |__ \__ \
+ \___|\___/ |_|\_||___/|___|  |_|  |___|\___/ |_|\_|/_/ \_\|____||___/*/
+/* Conditionals output blocks of styles only under certain conditions */
+
+@if (expression) {
+	// do something here
+}
+
+// ex 1:
+// scss:
+body {
+	@if (1 > 100){
+		background-color: green;
+	}
+	@if (1 + 1 ==2) {
+		background-color: red;
+	}
+}
+// css:
+body {
+	background-color: red;
+}
+
+// ex 2:
+// scss:
+$break-xs: 575px;
+$break-s: 576px;
+$break-m: 768px;
+$break-l: 992px;
+@mixin mq($break) {
+	@if $break == 'xs' {
+		@media (max-width: $break-xs) {
+			@content;
+		}
+	}
+	@else if $break == 'sm' {
+		@media (min-width: $break-s) {
+			@content;
+		}
+	}
+	@else if $break == 'md' {
+		@media (min-width: $break-m) {
+			@content;
+		}
+	}
+	@else if $break == 'lg' {
+		@media (min-width: $break-l) {
+			@content;
+		}
+	}
+}
+.img-featured {
+	@include mq('s') {
+		display: none;
+	}
+}
+.main-content {
+	@include mq('md') {
+		width: 100%;
+	}
+}
+.intro-text {
+	@include mq('lg') {
+		font-size: 24px;
+	}
+}
+//css:
+@media (max-width: 575px) {
+	.img-featured {
+		display: none;
+	}
+}
+@media (min-width: 768px) {
+	.main-content {
+		width: 100%;
+	}
+}
+@media (min-width: 992px) {
+	.intro-text {
+		font-size: 24px;
+	}
+}
+
+
+
+/*
+  ___    _    ___  ___     __  __    _    ___  ___ 
+ / __|  /_\  / __|/ __|   |  \/  |  /_\  | _ \/ __|
+ \__ \ / _ \ \__ \\__ \   | |\/| | / _ \ |  _/\__ \
+ |___//_/ \_\|___/|___/   |_|  |_|/_/ \_\|_|  |___/*/
+/* Sass maps provide a flexible way to keep track of data by associating a name with a particular value. */
+
+// scss:
+$breakpoints: (
+	'xs': 575px,
+	's': 576px,
+	'm': 768px,
+	'l': 992px
+);
+@mixin mq($break) {
+	$value: map-get($breakpoints, $break);
+	$sm: map-get($breakpoints, 's');
+
+	@if $value < $sm {
+		@media (max-width: $value) {
+			@content;
+		}
+	}
+	@else {
+		@media (min-width: $value) {
+			@content;
+		}
+	}
+}
+.img-featured {
+	@include mq('s') {
+		display: none;
+	}
+}
+.main-content {
+	@include mq('m') {
+		width: 100%;
+	}
+}
+.intro-text {
+	@include mq('l') {
+		font-size: 24px;
+	}
+}
+// css:
+@media (min-width: 576px) {
+	.img-featured {
+		display: none;
+	}
+}
+@media (min-width: 768px) {
+	.main-content {
+		width: 100%;
+	}
+}
+@media (min-width: 992px) {
+	.intro-text {
+		font-size: 24px;
+	}
+}
+
+
+
+/*
+  _     ___    ___   ___  ___ 
+ | |   / _ \  / _ \ | _ \/ __|
+ | |__| (_) || (_) ||  _/\__ \
+ |____|\___/  \___/ |_|  |___/*/
+/* Simplify repetitive tasks by cycling through lists of items or values and performing an action on each. */
+
+// @for ex:
+// scss:
+@for $i from 1 through 3 {
+	.item-#{$i} {width: 2em * $i;}
+}
+// css:
+.item-1 {
+	width: 2em;
+}
+.item-2 {
+	width: 4em;
+}
+.item-3 {
+	width: 6em;
+}
+
+// @each ex 1 (@each loops iterate through collections of data, like a lists or map, and performs an action on each item.):
+// scss:
+$vehicles: (
+	'honda',
+	'toyota',
+	'ford',
+);
+@each $make in $vehicles {
+	.make-#{$make} {
+		background-image: url('img/#{$make}.jpg')
+	}
+}
+// css:
+.make-honda {
+	background-image: url("img/honda.jpg");
+}
+.make-toyota {
+	background-image: url("img/toyota.jpg");
+}
+.make-ford {
+	background-image: url("img/ford.jpg");
+}
+
+// @each ex 2:
+// scss:
+$socialMedia: (
+	'fb': #3b5998,
+	'tw': #1da1f2,
+	'yt': #ff0000,
+	'sc': #fffc00,
+);
+@mixin socialMedia($map) {
+	@each $social, $brand-color in $map {
+		&-#{$social} {
+			color: $brand-color;
+		}
+	}
+}
+.icn {
+	@include socialMedia($socialMedia);
+}
+// css:
+.icn-fb {
+	color: #3b5998;
+}
+.icn-tw {
+	color: #1da1f2;
+}
+.icn-yt {
+	color: #ff0000;
+}
+.icn-sc {
+	color: #fffc00;
+}
+
+
+
+
+
+
+/*
+  ___   ___   _   _  ___   ___  ___    __  __    _    ___ 
+ / __| / _ \ | | | || _ \ / __|| __|  |  \/  |  /_\  | _ \
+ \__ \| (_) || |_| ||   /| (__ | _|   | |\/| | / _ \ |  _/
+ |___/ \___/  \___/ |_|_\ \___||___|  |_|  |_|/_/ \_\|_|  */
+/* Sass creates a sourcemap to help you see the original Sass/SCSS source while debugging in the browser. Sourcemaps contain information that links each line of your output CSS to the Sass/SCSS source, right down to the partial file and line of code. */
+
+// Recources
+// https://www.sitepoint.com/using-source-maps-debug-sass-chrome/#live-editing-scss-in-the-browser
+// https://robots.thoughtbot.com/sass-source-maps-chrome-magic
+
+// Chrome Dev Tools > Settings > Enable CSS source maps
