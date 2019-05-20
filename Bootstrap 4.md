@@ -1,15 +1,13 @@
-Bootstrap 4
-===
+# Bootstrap 4
 
-Media Queries
----
+## Media Queries
 
 Bootstrap is developed to be mobile first. Start your designs from mobile and scale up. It's important to note that breakpoints have been update as well.
 
 
 New screen size ranges:
 ```json
-xs =	0	-	575.98px
+xs =	<	-	575.98px
 
 sm =	576px	-	767.98px
 
@@ -17,7 +15,7 @@ md =	768px	-	991.98px
 
 lg =	992px	-	1199.98px
 
-xl =	1200px	and up
+xl =	1200px	-	>
 ```
 
 
